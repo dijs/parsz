@@ -1,0 +1,25 @@
+{
+  "name": "parsz",
+  "version": "0.0.1",
+  "description": "Parsing language and engine for the web",
+  "main": "index.js",
+  "dependencies": {
+    "cheerio": "~0.18.0",
+    "request": "~2.51.0",
+    "underscore": "~1.7.0",
+    "commander": "~2.6.0"
+  },
+  "devDependencies": {
+    "should": "~4.6.1",
+    "mocha": "~2.1.0",
+    "nock": "~0.57.0"
+  },
+  "scripts": {
+    "test": "node_modules/mocha/bin/mocha"
+  },
+  "bin": {
+    "parsz": "./index.js"
+  },
+  "author": "Richard van der Dys <richard.vanderdys@gmail.com> (http://richardvanderdys.com/)",
+  "license": "MIT"
+}
