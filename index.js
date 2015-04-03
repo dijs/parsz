@@ -18,12 +18,14 @@ var log = function(o) {
 };
 
 function select($, selector, filter) {
-	if (_.isObject(selector)) {
-		return selectObject($, selector);
-	} else if (_.isArray(filter)) {
+	if (_.isArray(filter)) {
 		return selectList($, selector, filter[0]);
+	} else if (_.isArray(selector)) {
+		return selectList($, selector[0]);
 	} else if (_.isString(selector)) {
 		return selectData($, selector);
+	} else if (_.isObject(selector)) {
+		return selectObject($, selector);
 	} else {
 		throw new Error('Selector not allowed: ' + selector);
 	}
@@ -40,7 +42,7 @@ function selectObject($, dataMap) {
 			log('selecting name with scope: ' + name + '/' + scope);
 			data[name] = select($, scope, filter);
 		} else {
-			log('selecting name: ' + filter);
+			log('selecting: ' + filter);
 			data[name] = select($, filter);
 		}
 	});
@@ -48,8 +50,13 @@ function selectObject($, dataMap) {
 }
 
 function selectList($, selector, dataMap) {
-	log('parsing list');
 	var results = [];
+	if (selector.indexOf('@') !== -1) {
+		var temp = selector.split('@');
+		selector = temp[0];
+		dataMap = '@' + temp[1];
+	}
+	log('parsing list with selector (' + selector + ') and data-map (' + dataMap + ')');
 	$(selector).each(function() {
 		results.push(select($(this), dataMap));
 	});
@@ -68,7 +75,6 @@ function selectAttr(el, selector) {
 }
 
 function selectData(el, selector) {
-	log('selecting data');
 	var value;
 	if (selector === '.') {
 		value = el.text();
@@ -80,7 +86,10 @@ function selectData(el, selector) {
 	return value;
 }
 
-function parse(parselet, url, cb) {
+function parse(parselet, url, cb, options) {
+	if (options && options.verbose) {
+		program.verbose = true;
+	}
 	request(url, function(err, res, html) {
 		if (!err && res.statusCode === 200) {
 			var $ = cheerio.load(html);
