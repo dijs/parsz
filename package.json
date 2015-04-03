@@ -20,6 +20,10 @@
   "bin": {
     "parsz": "./index.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dijs/parsz"
+  },
   "author": "Richard van der Dys <richard.vanderdys@gmail.com> (http://richardvanderdys.com/)",
   "license": "MIT"
 }
