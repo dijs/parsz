@@ -17,6 +17,19 @@ var log = function(o) {
 	}
 };
 
+var transformations = {
+    identity: function (value) {
+      return value;
+    },
+    trim: function (value) {
+      return value.trim();
+    },
+    parseInt: parseInt,
+    parseFloat: parseFloat,
+    floor: Math.floor,
+    max: Math.max
+};
+
 function select($, selector, filter) {
 	if (_.isArray(filter)) {
 		return selectList($, selector, filter[0]);
@@ -49,18 +62,41 @@ function selectObject($, dataMap) {
 	return data;
 }
 
-function selectList($, selector, dataMap) {
+function getTransformation(transformationNames, value) {
+  var transformationFns = transformationNames.map(function(name) {
+    return transformations[name];
+  });
+
+  return transformationFns.reduce(function(memo, fn, index) {
+	  return fn(memo);
+	}, value);
+}
+
+function selectList($, _selector, dataMap) {
 	var results = [];
+
+  var transformationsAt = _selector.indexOf('|');
+  var transformationNames = transformationsAt === -1 ?
+  ['identity'] :
+  _selector.substring(transformationsAt + 1)
+  .split('|');
+
+  var selector = transformationsAt === -1 ?
+  _selector :
+  _selector.substring(0, transformationsAt);
+
 	if (selector.indexOf('@') !== -1) {
 		var temp = selector.split('@');
 		selector = temp[0];
 		dataMap = '@' + temp[1];
 	}
+
 	log('parsing list with selector (' + selector + ') and data-map (' + dataMap + ')');
 	$(selector).each(function() {
 		results.push(select($(this), dataMap));
 	});
-	return results;
+
+	return getTransformation(transformationNames, results);
 }
 
 function findSelector(el, selector) {
@@ -74,8 +110,18 @@ function selectAttr(el, selector) {
 	return selector.length > 0 ? findSelector(el, selector).attr(attrName) : el.attr(attrName);
 }
 
-function selectData(el, selector) {
+function selectData(el, _selector) {
 	var value;
+
+  var transformationsAt = _selector.indexOf('|');
+  var transformationNames = transformationsAt === -1 ?
+    ['identity'] :
+    _selector.substring(transformationsAt + 1)
+      .split('|');
+  var selector = transformationsAt === -1 ?
+    _selector :
+    _selector.substring(0, transformationsAt);
+
 	if (selector === '.') {
 		value = el.text();
 	} else if (selector.indexOf('@') !== -1) {
@@ -83,7 +129,8 @@ function selectData(el, selector) {
 	} else {
 		value = findSelector(el, selector).text();
 	}
-	return value;
+
+  return getTransformation(transformationNames, value);
 }
 
 function parse(parselet, url, cb, options) {

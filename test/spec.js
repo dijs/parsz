@@ -13,6 +13,26 @@ nock('http://www.test.com')
 	.times(4)
 	.reply(200, fs.readFileSync(__dirname + '/index.html', 'UTF-8'));
 
+nock('http://www.yelp.com')
+	.get('/')
+	.times(2)
+	.reply(200, fs.readFileSync(__dirname + '/yelp.html', 'UTF-8'));
+
+var tacoPlacesInSanFrancsico = {
+  'places(.regular-search-result)': [{
+    name: '.biz-name',
+    rating: '.biz-rating img@alt|parseFloat',
+    phone: '.biz-phone|trim',
+    address: 'address|trim',
+  }]
+};
+
+// "reviews(.review)": [{
+//   "date": "meta[itemprop=datePublished] @content",
+//   "user_name": ".user-name a",
+//   "comment": "p[itemprop=description]"
+// }]
+
 describe('Parsley', function() {
 	it('should parse plain selectors', function(done) {
 		parsz({
@@ -52,4 +72,16 @@ describe('Parsley', function() {
 			done();
 		});
 	});
+
+  it('should parse yelp reviews', function(done) {
+    parsz(tacoPlacesInSanFrancsico, 'http://www.yelp.com', function(err, data) {
+      data.places.filter(function (place) {
+        return place.rating > 4;
+      }).length.should.equal(4);
+      data.places[0].name.should.equal('Tacorea');
+      data.places[0].phone.should.equal('(415) 885-1325');
+			done();
+		});
+  });
+
 });
