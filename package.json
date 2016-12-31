@@ -4,18 +4,28 @@
   "description": "Parsing language and engine for the web",
   "main": "index.js",
   "dependencies": {
+    "babel-polyfill": "^6.20.0",
     "cheerio": "~0.18.0",
+    "commander": "~2.6.0",
+    "debug": "^2.3.3",
     "request": "~2.51.0",
-    "underscore": "~1.7.0",
-    "commander": "~2.6.0"
+    "underscore": "~1.7.0"
   },
   "devDependencies": {
-    "should": "~4.6.1",
+    "babel-cli": "^6.18.0",
+    "babel-preset-latest": "^6.16.0",
+    "eslint": "^3.12.2",
+    "eslint-config-airbnb-base": "^11.0.0",
+    "eslint-plugin-import": "^2.2.0",
     "mocha": "~2.1.0",
-    "nock": "~0.57.0"
+    "nock": "~0.57.0",
+    "nodemon": "^1.11.0",
+    "should": "~4.6.1"
   },
   "scripts": {
-    "test": "node_modules/mocha/bin/mocha"
+    "test": "node_modules/mocha/bin/mocha",
+    "build": "babel src -d dist",
+    "test:watch": "nodemon --watch test --watch src --exec \"npm run build && npm test\""
   },
   "bin": {
     "parsz": "./index.js"
