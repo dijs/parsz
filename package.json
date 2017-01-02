@@ -1,8 +1,8 @@
 {
   "name": "parsz",
-  "version": "0.0.4",
+  "version": "2.0.0",
   "description": "Parsing language and engine for the web",
-  "main": "index.js",
+  "main": "dist/index.js",
   "dependencies": {
     "babel-polyfill": "^6.20.0",
     "cheerio": "~0.18.0",

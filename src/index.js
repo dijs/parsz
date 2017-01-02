@@ -2,7 +2,8 @@ import 'babel-polyfill';
 import debug from 'debug';
 import request from 'request';
 import cheerio from 'cheerio';
-import { resolve as urlResolve } from 'url';
+import { resolve as urlResolve, parse as urlParse } from 'url';
+import program from 'commander';
 
 const log = debug('parsz');
 
@@ -66,7 +67,7 @@ function getScopeResolver(currentScope, keyInfo, options) {
       log('Parsing remote data...', keyInfo);
       const linkScope = getItemScope(currentScope, keyInfo.linkSelector);
       const path = linkScope.attr('href');
-      const url = urlResolve(options.context, path);
+      const url = urlResolve(options.context || '', path);
       log(`Requesting ${url}`);
       return getHtml(url)
         .then(html => resolve(cheerio.load(html)));
@@ -169,4 +170,23 @@ function mapToData(html, map, options) {
 export default function parse(parselet, url, options) {
   log(`Requesting ${url}`);
   return getHtml(url).then(html => mapToData(html, parselet, options));
+}
+
+if (require.main === module) {
+  program
+    .version('0.0.1')
+    .option('-v, --verbose', 'Verbose mode')
+    .option('-u, --url <path>', 'URL to parse')
+    .option('-p, --parselet <path>', 'Path to parselet')
+    .parse(process.argv);
+
+  const parsedUrl = urlParse(program.url);
+  // eslint-disable-next-line import/no-dynamic-require, global-require
+  parse(require(program.parselet), program.url, {
+    context: `${parsedUrl.protocol}//${parsedUrl.host}`,
+  })
+    // eslint-disable-next-line no-console
+    .then(data => console.log(JSON.stringify(data, null, '\t')))
+    // eslint-disable-next-line no-console
+    .catch(console.error);
 }
