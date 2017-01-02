@@ -28,7 +28,7 @@
     "test:watch": "nodemon --watch test --watch src --exec \"npm run build && npm test\""
   },
   "bin": {
-    "parsz": "./index.js"
+    "parsz": "./dist/index.js"
   },
   "repository": {
     "type": "git",
