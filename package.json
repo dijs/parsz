@@ -25,7 +25,8 @@
   "scripts": {
     "test": "node_modules/mocha/bin/mocha",
     "build": "babel src -d dist",
-    "test:watch": "nodemon --watch test --watch src --exec \"npm run build && npm test\""
+    "test:watch": "nodemon --watch test --watch src --exec \"npm run build && npm test\"",
+    "install": "npm run build",
   },
   "bin": {
     "parsz": "./dist/index.js"
