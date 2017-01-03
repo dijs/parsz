@@ -1,52 +1,112 @@
 # pársz
-### - The language engine and tool for web parsing
-
-This is a Javascript rewrite of [https://github.com/fizx/parsley](https://github.com/fizx/parsley).
+### - A tool for parsing the web
 
 ## Usage
 
-Install globally from npm
+Install globally from npm/yarn
 
 ``` bash
-$ sudo npm install -g parsz
+$ npm install -g parsz
 ```
 
-Learn options from help
+View options from help menu
 
 ```bash
 $ parsz --help
 ```
 
-The tool uses a "parselet" as a recipe/filter to parse a website.
+Use a "parselet" as a recipe/filter to parse a website.
 
 The structure of the parselet is JSON.
 
-Here is an example of a parselet for grabbing business data from Yelp:
+Here is an example of a parselet for grabbing business data from a Yelp page:
 
 ```json
 {
-  "name": "h1",
-  "phone": ".biz-phone",
-  "address": "address",
+  "name": "h1|trim",
+  "phone": ".biz-phone|trim",
+  "address": "address|trim",
   "reviews(.review)": [{
     "date": "meta[itemprop=datePublished] @content",
-    "user_name": ".user-name a",
-    "comment": "p[itemprop=description]"
+    "name": ".user-name a",
+    "comment": ".review-content p"
   }]
 }
 ```
 
-## As a Module
+## As a module
 
-You can also use parsz as a module which loads in as one function:
+You can also use parsz as a module:
 
-```javascript
-var parsz = require('parsz');
-parsz([Parselet JSON], [URL], function(err, data) {
-	// Do something with the data
+```js
+import parsz from 'parsz';
+
+parsz([Parselet JSON], [URL]).then(data => {
+  // Do something with the data
 });
 ```
 
-## Future
+## Tips
 
-There is much to be done, although it is currently a *very* useful tool! 
+This is a very general purpose and flexible tool. But here are some tips for getting started.
+
+### Grabbing a list of data
+
+Use a reference selector in the key and an Array as the value.
+
+```json
+{
+  "users(.user)": [{
+    "name": ".name",
+    "age": ".age",
+  }]
+}
+```
+
+### Use transformation functions on data
+
+Add a pipe (|) and the transformation name after the data selector.
+
+```json
+{
+  "user": {
+    "name": ".name|trim",
+    "age": ".age|parseInt",
+    "worth": ".age|parseFloat",
+    "someNumber": ".age|floor",
+  }
+}
+```
+
+*If anyone would like to see a certain, helpful transformation function added, please just open a issue*
+
+### Grabbing an attribute
+
+Use a (@) symbol to reference an attribute.
+
+```json
+{
+  "user": {
+    "name": ".name",
+    "nickname": ".name@data-nickname",
+  }
+}
+```
+
+### Grabbing remote data
+
+Use a (~) and a link selector to reference external content. The mapping (value) will be relative to that new external scope.
+
+```json
+{
+  "user": {
+    "name": ".name",
+    "company~(a.company)": {
+      "name": ".company-name",
+      "address": ".company-address",
+    },
+  }
+}
+```
+
+Have fun!
