@@ -125,7 +125,7 @@ function parseLocalDataListItem(item, itemMap, options) {
 }
 
 function parseLocalDataList(scope, itemSelector, itemMap, options) {
-  log(`Parsing data list of selector (${itemSelector})`);
+  log(`Parsing data list of selector (${itemSelector || 'n/a'})`);
   const items = getItemScope(scope, itemSelector);
   log(`Items: ${items.length}`);
   return Promise.all(items.map((index, item) => {
