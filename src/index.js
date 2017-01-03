@@ -182,6 +182,13 @@ if (require.main === module) {
     .option('-p, --parselet <path>', 'Path to parselet')
     .parse(process.argv);
 
+
+  if (!program.parselet || !program.url) {
+    // eslint-disable-next-line no-console
+    console.log('Please use --help');
+    process.exit();
+  }
+
   const parsedUrl = urlParse(program.url);
   // eslint-disable-next-line import/no-dynamic-require, global-require
   parse(require(program.parselet), program.url, {
