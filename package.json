@@ -11,6 +11,13 @@
     "request": "~2.51.0",
     "underscore": "~1.7.0"
   },
+  "keywords": [
+    "parse",
+    "site",
+    "website",
+    "html",
+    "scrape"
+  ],
   "devDependencies": {
     "babel-cli": "^6.18.0",
     "babel-preset-latest": "^6.16.0",
