@@ -1,6 +1,6 @@
 {
   "name": "parsz",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "Parsing language and engine for the web",
   "main": "dist/index.js",
   "dependencies": {
