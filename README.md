@@ -1,6 +1,8 @@
 # pársz
 ### - A tool for parsing the web
 
+[![NPM Version](https://img.shields.io/npm/v/parsz.svg)](https://www.npmjs.com/package/parsz)
+
 ## Usage
 
 Install globally from npm/yarn
