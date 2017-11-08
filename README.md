@@ -112,3 +112,8 @@ Use a (~) and a link selector to reference external content. The mapping (value)
 ```
 
 Have fun!
+
+### Related projects
+
+- [parsley](https://github.com/fizx/parsley) (C)
+- [parslepy](https://github.com/redapple/parslepy/) (Python)
